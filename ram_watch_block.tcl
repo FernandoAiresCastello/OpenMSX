@@ -10,12 +10,11 @@ proc ram_watch_block {addr_start lines} {
 	set ram_watch_line_count $lines
 
 	if {[osd exists ram_view]} {
-		disable_periodic ram_watch_block_update_widget
 		osd destroy ram_view
 	}
 
 	ram_watch_block_create_widget
-	enable_periodic ram_watch_block_update_widget
+	set id [after frame ram_watch_block_update_widget]
 	
 	return "RAM block watch widget added ([format "%i lines starting from 0x%04X" $ram_watch_line_count $ram_watch_start_address])"
 }
@@ -76,6 +75,8 @@ proc ram_watch_block_update_widget {} {
 		
 		osd configure ram_view.${index_str} -text $value
 	}
+	
+	set id [after frame ram_watch_block_update_widget]
 }
 
 namespace export ram_watch_block
